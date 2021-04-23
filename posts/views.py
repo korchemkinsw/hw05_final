@@ -1,17 +1,16 @@
 from django.shortcuts import render, get_object_or_404, redirect
 
 from django.contrib.auth.decorators import login_required
-from django.views.decorators.cache import cache_page
 
 from django.core.paginator import Paginator
 
 from .forms import CommentForm, PostForm
 
-from .models import Comment, Follow, Group, Post, User
+from .models import Follow, Group, Post, User
 
 from yatube.settings import PER_PAGE
 
-#@cache_page(20)
+
 def index(request):
     latest = Post.objects.all()
     paginator = Paginator(latest, PER_PAGE)
@@ -29,7 +28,6 @@ def group_posts(request, slug):
     return render(request, 'group.html', {'group': group, 'page': page})
 
 
-#@login_required
 def profile(request, username):
     author = get_object_or_404(User, username=username)
     posts = author.posts.all()
@@ -70,12 +68,13 @@ def post_view(request, username, post_id):
             'author': post.author,
             'comments': comments,
             'form': form
-    })
+        })
     new_comment = form.save(commit=False)
     new_comment.author = request.user
     new_comment.post = post
     new_comment.save()
     return redirect('post', username, post_id)
+
 
 @login_required
 def post_edit(request, username, post_id):
@@ -100,6 +99,7 @@ def post_edit(request, username, post_id):
     form.save()
     return redirect('post', username, post_id)
 
+
 @login_required
 def add_comment(request, username, post_id):
     post = get_object_or_404(
@@ -120,6 +120,7 @@ def add_comment(request, username, post_id):
     new_comment.save()
     return redirect('post', username, post_id)
 
+
 @login_required
 def follow_index(request):
     posts = Post.objects.filter(author__following__user=request.user)
@@ -128,18 +129,20 @@ def follow_index(request):
     page = paginator.get_page(page_number)
     return render(request, "follow.html", {'page': page})
 
+
 @login_required
 def profile_follow(request, username):
     author = get_object_or_404(User, username=username)
     if author == request.user or Follow.objects.filter(
-        user=request.user, author=author):
+        user=request.user, author=author
+    ):
         return redirect("profile", username)
     Follow.objects.create(user=request.user, author=author)
     posts = Post.objects.filter(author__following__user=request.user)
     paginator = Paginator(posts, PER_PAGE)
     page_number = request.GET.get('page')
     page = paginator.get_page(page_number)
-    return render(request, "follow.html", {'page': page,})
+    return render(request, "follow.html", {'page': page})
 
 @login_required
 def profile_unfollow(request, username):
