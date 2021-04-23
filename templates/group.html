@@ -1,0 +1,16 @@
+<!doctype html>
+
+{% extends "base.html" %}
+
+{% block title %}Записи сообщества {{ group.title }} | Yatube{% endblock %}
+{% block header %}{{ group.title }}{% endblock %}
+{% load thumbnail %}
+{% block content %}
+  <p>{{ group.description|linebreaks }}</p>
+  {% for post in page %}
+    {% include "post_item.html" with post=post %}
+  {% endfor %}
+
+  {% include "paginator.html" %}
+
+{% endblock %}
