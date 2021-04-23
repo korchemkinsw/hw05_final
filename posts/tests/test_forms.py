@@ -19,8 +19,6 @@ class PostCreateFormTest(TestCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
-        #settings.MEDIA_ROOT = tempfile.mkdtemp(dir=settings.BASE_DIR)
-        #cls.TEMP_MEDIA_ROOT = tempfile.mkdtemp(dir=settings.BASE_DIR)
         cls.user = User.objects.create_user(username='demo')
         cls.group = Group.objects.create(
             title='группа',
@@ -52,7 +50,6 @@ class PostCreateFormTest(TestCase):
 
     @classmethod
     def tearDownClass(cls):
-        #shutil.rmtree(settings.MEDIA_ROOT, ignore_errors=True)
         shutil.rmtree(TEMP_MEDIA_ROOT, ignore_errors=True)
         super().tearDownClass()
 

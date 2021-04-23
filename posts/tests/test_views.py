@@ -1,4 +1,3 @@
-from django.conf import settings
 from django.urls import reverse
 from django.test import Client, TestCase
 
@@ -125,7 +124,7 @@ class PostPagesTests(TestCase):
 
     def test_autorized_user_follow(self):
         """
-        авторизованный пользователь может 
+        авторизованный пользователь может
         подписываться на других авторов и удалять их из подписок
         """
         follower_client = Client()
@@ -152,9 +151,8 @@ class PostPagesTests(TestCase):
         follower_client.force_login(self.other_user)
         follower_client.get(URL_FOLLOW)
         unfollower_client = Client()
-        unfollower_client.force_login(self.third_user)        
+        unfollower_client.force_login(self.third_user)
         response = follower_client.get(URL_FOLLOW_INDEX)
         self.assertTrue(response.context['post'])
         response = unfollower_client.get(URL_FOLLOW_INDEX)
         self.assertEqual(len(response.context['page']), 0)
- 

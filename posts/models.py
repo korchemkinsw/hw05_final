@@ -57,6 +57,7 @@ class Post(models.Model):
             f'{self.group} '
             f'{self.text[:15]}...')
 
+
 class Comment(models.Model):
     post = models.ForeignKey(
         Post, verbose_name="публикация", help_text="публикация",
@@ -71,7 +72,7 @@ class Comment(models.Model):
         verbose_name="дата комментария",
         help_text="дата комментария",
         auto_now_add=True)
-    
+
     class Meta:
         verbose_name = 'комментарий'
         verbose_name_plural = 'комментарии'
@@ -83,6 +84,7 @@ class Comment(models.Model):
             f'{self.created.date()} '
             f'{self.post.text[:15]}... '
             f'{self.text[:15]}...')
+
 
 class Follow(models.Model):
     user = models.ForeignKey(

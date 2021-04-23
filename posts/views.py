@@ -144,6 +144,7 @@ def profile_follow(request, username):
     page = paginator.get_page(page_number)
     return render(request, "follow.html", {'page': page})
 
+
 @login_required
 def profile_unfollow(request, username):
     author = get_object_or_404(User, username=username)
@@ -155,6 +156,7 @@ def profile_unfollow(request, username):
     page = paginator.get_page(page_number)
     return render(request, "follow.html", {'page': page})
 
+
 def page_not_found(request, exception):
     return render(
         request,
@@ -162,6 +164,7 @@ def page_not_found(request, exception):
         {"path": request.path},
         status=404
     )
+
 
 def server_error(request):
     return render(request, "misc/500.html", status=500)
