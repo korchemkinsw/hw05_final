@@ -126,12 +126,13 @@ def follow_index(request):
     paginator = Paginator(posts, PER_PAGE)
     page_number = request.GET.get('page')
     page = paginator.get_page(page_number)
-    return render(request, "follow.html", {'page': page,})
+    return render(request, "follow.html", {'page': page})
 
 @login_required
 def profile_follow(request, username):
     author = get_object_or_404(User, username=username)
-    if author == request.user or Follow.objects.filter(user=request.user, author=author):
+    if author == request.user or Follow.objects.filter(
+        user=request.user, author=author):
         return redirect("profile", username)
     Follow.objects.create(user=request.user, author=author)
     posts = Post.objects.filter(author__following__user=request.user)
@@ -149,13 +150,13 @@ def profile_unfollow(request, username):
     paginator = Paginator(posts, PER_PAGE)
     page_number = request.GET.get('page')
     page = paginator.get_page(page_number)
-    return render(request, "follow.html", {'page': page,})
+    return render(request, "follow.html", {'page': page})
 
 def page_not_found(request, exception):
     return render(
-        request, 
-        "misc/404.html", 
-        {"path": request.path}, 
+        request,
+        "misc/404.html",
+        {"path": request.path},
         status=404
     )
 
