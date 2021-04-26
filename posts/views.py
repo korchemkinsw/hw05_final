@@ -31,12 +31,17 @@ def group_posts(request, slug):
 def profile(request, username):
     author = get_object_or_404(User, username=username)
     posts = author.posts.all()
+    following = (
+        request.user.is_authenticated and
+        Follow.objects.filter(user=request.user, author=author).exists()
+    )
     paginator = Paginator(posts, PER_PAGE)
     page_number = request.GET.get('page')
     page = paginator.get_page(page_number)
     return render(request, 'profile.html', {
         'author': author,
         'page': page,
+        'following': following,
     })
 
 
@@ -133,11 +138,9 @@ def follow_index(request):
 @login_required
 def profile_follow(request, username):
     author = get_object_or_404(User, username=username)
-    if author == request.user or Follow.objects.filter(
-        user=request.user, author=author
-    ):
+    if author == request.user:
         return redirect("profile", username)
-    Follow.objects.create(user=request.user, author=author)
+    Follow.objects.get_or_create(user=request.user, author=author)
     posts = Post.objects.filter(author__following__user=request.user)
     paginator = Paginator(posts, PER_PAGE)
     page_number = request.GET.get('page')
@@ -148,7 +151,7 @@ def profile_follow(request, username):
 @login_required
 def profile_unfollow(request, username):
     author = get_object_or_404(User, username=username)
-    dell_follow = Follow.objects.get(user=request.user, author=author)
+    dell_follow = get_object_or_404(Follow, user=request.user, author=author)
     dell_follow.delete()
     posts = Post.objects.filter(author__following__user=request.user)
     paginator = Paginator(posts, PER_PAGE)

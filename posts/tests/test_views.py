@@ -131,6 +131,11 @@ class PostPagesTests(TestCase):
         follower_client.force_login(self.other_user)
         follower_client.get(URL_FOLLOW)
         self.assertTrue(Follow.objects.all())
+
+    def test_autorized_user_unfollow(self):
+        follower_client = Client()
+        follower_client.force_login(self.other_user)
+        Follow.objects.create(user=self.other_user, author=self.user)
         follower_client.get(URL_UNFOLLOW)
         self.assertFalse(Follow.objects.all())
 
